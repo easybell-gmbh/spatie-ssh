@@ -235,6 +235,8 @@ class Ssh
 
     protected function getTarget(): string
     {
-        return "{$this->user}@{$this->host}";
+        $host = filter_var($this->host, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '[' . $this->host . ']' : $this->host;
+        
+        return "{$this->user}@{$host}";
     }
 }
