@@ -12,7 +12,7 @@ class SshTest extends TestCase
 {
     use MatchesSnapshots;
 
-    private Ssh $ssh;
+    private $ssh;
 
     public function setUp(): void
     {
@@ -122,6 +122,22 @@ class SshTest extends TestCase
         $command = $this->ssh->configureProcess(function (Process $process) {
             $process->setTimeout(0);
         })->getExecuteCommand('whoami');
+
+        $this->assertMatchesSnapshot($command);
+    }
+
+    /** @test */
+    public function it_can_handle_ipv6_addresses()
+    {
+        $command = (new Ssh('user', '::1'))->getUploadCommand('.env', 'spatie.be/current/.env');
+
+        $this->assertMatchesSnapshot($command);
+    }
+
+    /** @test */
+    public function it_can_handle_ipv4_addresses()
+    {
+        $command = (new Ssh('user', '127.0.0.1'))->getUploadCommand('.env', 'spatie.be/current/.env');
 
         $this->assertMatchesSnapshot($command);
     }
